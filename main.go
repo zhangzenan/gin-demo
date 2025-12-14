@@ -7,14 +7,16 @@ import (
 )
 
 type Article struct {
-	Title   string
-	Desc    string
-	Content string
+	Title   string `json:"title"`
+	Desc    string `json:"desc"`
+	Content string `json:"conent"`
 }
 
 func main() {
 	//创建一个默认的路由引擎
 	r := gin.Default()
+	//配置模版的文件
+	r.LoadHTMLGlob("templates/*")
 	//配置路由
 	r.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "值:%v", "你好gin")
@@ -50,6 +52,20 @@ func main() {
 			Desc:    "描述",
 		}
 		ctx.JSON(200, a)
+	})
+	//jsonp
+	r.GET("jsonp", func(ctx *gin.Context) {
+		a := &Article{
+			Title:   "我是一个标题-jsonp",
+			Content: "测试内容",
+			Desc:    "描述",
+		}
+		ctx.JSON(200, a)
+	})
+	r.GET("/goods", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "goods.html", gin.H{
+			"title": "我是后台数据",
+		})
 	})
 	r.Run(":8000") //启动一个web服务
 }
